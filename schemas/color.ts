@@ -12,9 +12,10 @@ export default {
     },
     {
       name: 'hex',
-      type: 'string', // Hex code for color display
-      title: 'Color Hex',
-      validation: (Rule: any) => Rule.required(),
+      type: 'array', // Array of hex codes
+      title: 'Color Hex Codes',
+      of: [{ type: 'string' }],
+      validation: (Rule: any) => Rule.required().max(3), // Maximum 3 hex codes
     },
   ],
 };

@@ -21,11 +21,13 @@ const categories = [
 ]
 
 const colors = [
-  { _id: 'color-black', name: 'Black', hex: '#000000' },
-  { _id: 'color-white', name: 'White', hex: '#FFFFFF' },
-  { _id: 'color-red', name: 'Red', hex: '#FF0000' },
-  { _id: 'color-blue', name: 'Blue', hex: '#0000FF' },
-  { _id: 'color-green', name: 'Green', hex: '#008000' },
+  { _id: 'color-black', name: 'Black', hex: ['#000000'] },
+  { _id: 'color-white', name: 'White', hex: ['#FFFFFF'] },
+  { _id: 'color-red', name: 'Red', hex: ['#FF0000', '#DC143C'] },
+  { _id: 'color-blue', name: 'Blue', hex: ['#0000FF'] },
+  { _id: 'color-green', name: 'Green', hex: ['#008000'] },
+  { _id: 'color-golden-fire', name: 'Golden Fire', hex: ['#FF4500', '#FFD700', '#FF8C00'] },
+  { _id: 'color-arctic', name: 'Arctic', hex: ['#FFFFFF', '#B3D9FF'] },
 ]
 
 const sizes = [
