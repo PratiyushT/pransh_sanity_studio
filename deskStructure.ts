@@ -1,9 +1,20 @@
 import { StructureBuilder } from 'sanity/structure'
+import Dashboard from './structure/components/Dashboard'
+
 
 export const deskStructure = (S: StructureBuilder) =>
+
   S.list()
     .title('Dashboard')
     .items([
+
+      S.listItem()
+        .title('📊 Dashboard')
+        .child(
+          S.component()
+            .title('Dashboard')
+            .component(Dashboard)
+        ),
       // 🔹 Products
       S.listItem()
         .title('👜 Products')
@@ -71,8 +82,5 @@ export const deskStructure = (S: StructureBuilder) =>
             `)
         ),
 
-      // Optional: All Variants flat list (uncomment if needed)
-      // S.listItem()
-      //   .title('🧩 All Variants (flat)')
-      //   .child(S.documentTypeList('variant').title('All Variants')),
+
     ])
