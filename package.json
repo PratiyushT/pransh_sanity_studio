@@ -2,14 +2,16 @@
   "name": "pransh",
   "private": true,
   "version": "1.0.0",
+  "type": "module",
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "sanity/node_modules/.bin/sanity dev",
-    "start": "sanity/node_modules/.bin/sanity start",
-    "build": "sanity/node_modules/.bin/sanity build",
-    "deploy": "sanity/node_modules/.bin/sanity deploy",
-    "deploy-graphql": "sanity/node_modules/.bin/sanity graphql deploy"
+    "dev": "pnpx sanity dev",
+    "start": "pnpx sanity start",
+    "build": "pnpx sanity build",
+    "deploy": "pnpx sanity deploy",
+    "seed": "pnpx ts-node scripts/seed.ts",
+    "clear": "pnpx ts-node scripts/clearAll.ts"
   },
   "keywords": [
     "sanity"
@@ -19,6 +21,7 @@
     "@sanity/client": "^6.29.0",
     "@sanity/vision": "^3.84.0",
     "dotenv": "^16.5.0",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sanity": "^3.84.0",

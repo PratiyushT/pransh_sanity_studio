@@ -1,7 +1,9 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv/config'
 import {createClient} from '@sanity/client'
 
-dotenv.config({path: './.env'})
+//Run this to clear all the data from sanity studio.
+//pnpx ts-node scripts/clearAll.ts 
+
 
 // Sanity Client Setup
 const client = createClient({

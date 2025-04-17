@@ -11,6 +11,25 @@ export default {
       validation: (Rule: any) => Rule.required(),
     },
     {
+      name: 'slug',
+      type: 'slug',
+      title: 'Slug',
+      options: {
+        source: 'name',
+        maxLength: 96,
+        isUnique: (inputSlug: string, context: any) => {
+          const { document, getClient } = context
+          const client = getClient({ apiVersion: '2023-05-03' })
+          return client.fetch(
+            `!defined(*[_type == "product" && slug.current == $slug && _id != $docId][0])`,
+            { slug: inputSlug, docId: document._id }
+          )
+        }
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    
+    {
       name: 'description',
       type: 'text', // Multi-line text field
       title: 'Description',
@@ -36,6 +55,15 @@ export default {
       readOnly: true, // Cannot be edited manually
       validation: (Rule: any) => Rule.min(0),
 
+    },
+    {
+      name: 'mainImage',
+      type: 'image',
+      title: 'Main Image',
+      options: {
+        hotspot: true,
+      },
+      validation: (Rule: any) => Rule.required(),
     },
     {
       name: 'variants',
