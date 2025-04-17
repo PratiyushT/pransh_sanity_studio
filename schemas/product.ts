@@ -1,5 +1,6 @@
-// Schema for Product document
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'product',
   type: 'document',
   title: 'Product',
@@ -8,7 +9,7 @@ export default {
       name: 'name',
       type: 'string',
       title: 'Product Name',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'slug',
@@ -17,44 +18,42 @@ export default {
       options: {
         source: 'name',
         maxLength: 96,
-        isUnique: (inputSlug: string, context: any) => {
+        isUnique: (inputSlug: string, context) => {
           const { document, getClient } = context
           const client = getClient({ apiVersion: '2023-05-03' })
           return client.fetch(
             `!defined(*[_type == "product" && slug.current == $slug && _id != $docId][0])`,
             { slug: inputSlug, docId: document._id }
           )
-        }
+        },
       },
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
-    
     {
       name: 'description',
-      type: 'text', // Multi-line text field
+      type: 'text',
       title: 'Description',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'category',
-      type: 'reference', // Reference to Category document
+      type: 'reference',
       to: [{ type: 'category' }],
       title: 'Category',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
-      name: 'isFeatured', // Boolean to mark featured product
+      name: 'isFeatured',
       type: 'boolean',
       title: 'Featured Product?',
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'rating',
       type: 'number',
-      title: 'Rating (readonly)', // Average rating from backend
-      readOnly: true, // Cannot be edited manually
-      validation: (Rule: any) => Rule.min(0),
-
+      title: 'Rating (readonly)',
+      readOnly: true,
+      validation: (Rule) => Rule.min(0),
     },
     {
       name: 'mainImage',
@@ -63,58 +62,32 @@ export default {
       options: {
         hotspot: true,
       },
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'variants',
-      type: 'array', // Array of variant objects
+      type: 'array',
       title: 'Variants',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {
-              name: 'sku',
-              type: 'string', // Unique SKU per variant
-              title: 'SKU',
-              validation: (Rule: any) => Rule.required(),
-            },
-            {
-              name: 'color',
-              type: 'reference',
-              to: [{ type: 'color' }],
-              title: 'Color',
-              validation: (Rule: any) => Rule.required(),
-            },
-            {
-              name: 'size',
-              type: 'reference',
-              to: [{ type: 'size' }],
-              title: 'Size',
-              validation: (Rule: any) => Rule.required(),
-            },
-            {
-              name: 'price',
-              type: 'number',
-              title: 'Price',
-              validation: (Rule: any) => Rule.required(),
-            },
-            {
-              name: 'stock',
-              type: 'number',
-              title: 'Stock',
-              validation: (Rule: any) => Rule.min(0), // Must be >= 0
-            },
-            {
-              name: 'images',
-              type: 'array', // Multiple images per variant
-              of: [{ type: 'image', options: { hotspot: true } }],
-              title: 'Images',
-            },
-          ],
-        },
-      ],
-      validation: (Rule: any) => Rule.min(1),
-    },
+      of: [{ type: 'reference', to: [{ type: 'variant' }] }],
+      options: {
+        layout: 'grid'
+      }
+    }
+    
   ],
-};
+
+  preview: {
+    select: {
+      title: 'name',
+      media: 'mainImage',
+      stock: 'variants.0.stock',
+    },
+    prepare({ title, stock, media }) {
+      return {
+        title,
+        subtitle: `Stock: ${stock ?? 0}`,
+        media,
+      }
+    },
+  },
+})

@@ -1,11 +1,8 @@
 import dotenv from 'dotenv/config'
-import {createClient} from '@sanity/client'
+import { createClient } from '@sanity/client'
 
-//Run this to clear all the data from sanity studio.
-//pnpx ts-node scripts/clearAll.ts 
+// Run with: pnpx tsx scripts/clearAll.ts
 
-
-// Sanity Client Setup
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID!,
   dataset: process.env.SANITY_DATASET!,
@@ -14,25 +11,48 @@ const client = createClient({
   useCdn: false
 })
 
+async function breakReferences() {
+  console.log('🔗 Removing references between products and variants...')
 
-async function clear() {
-  console.log('Deleting all products...')
-  await client.delete({query: '*[_type == "product"]'})
+  // Remove all product -> variants reference arrays
+  const products = await client.fetch(`*[_type == "product" && defined(variants)]{_id}`)
+  for (const p of products) {
+    await client.patch(p._id).unset(['variants']).commit()
+  }
 
-  console.log('Deleting all categories...')
-  await client.delete({query: '*[_type == "category"]'})
+  // Remove all variant -> product references
+  const variants = await client.fetch(`*[_type == "variant" && defined(product)]{_id}`)
+  for (const v of variants) {
+    await client.patch(v._id).unset(['product']).commit()
+  }
 
-  console.log('Deleting all colors...')
-  await client.delete({query: '*[_type == "color"]'})
-
-  console.log('Deleting all sizes...')
-  await client.delete({query: '*[_type == "size"]'})
-
-  console.log('All documents deleted successfully!')
+  console.log('✅ References removed.')
 }
 
-clear().catch(err => {
-  console.error('Error deleting documents:', err)
-})
+async function clearAll() {
+  try {
+    await breakReferences()
 
-export default clear
+    console.log('🗑 Deleting all variants...')
+    await client.delete({ query: '*[_type == "variant"]' })
+
+    console.log('🗑 Deleting all products...')
+    await client.delete({ query: '*[_type == "product"]' })
+
+    console.log('🗑 Deleting all categories...')
+    await client.delete({ query: '*[_type == "category"]' })
+
+    console.log('🗑 Deleting all colors...')
+    await client.delete({ query: '*[_type == "color"]' })
+
+    console.log('🗑 Deleting all sizes...')
+    await client.delete({ query: '*[_type == "size"]' })
+
+    console.log('✅ All documents deleted successfully!')
+  } catch (err) {
+    console.error('❌ Error during deletion:', err)
+    process.exit(1)
+  }
+}
+
+clearAll()

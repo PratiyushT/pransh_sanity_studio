@@ -19,6 +19,9 @@
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
     "@sanity/client": "^6.29.0",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/structure": "^2.36.2",
+    "@sanity/ui": "^2.15.13",
     "@sanity/vision": "^3.84.0",
     "dotenv": "^16.5.0",
     "node-fetch": "^3.3.2",
